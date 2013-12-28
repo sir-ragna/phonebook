@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Adress book</title>
+    <style type="text/css">
+        td, th {
+            padding: 0.5rem;
+            height: 2rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background: lightblue;
+            border-color: white;
+        }
+        body {
+            padding: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>ADR Book</h1>
+
+<table>
+    <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
+    {{#each person}}
+        <tr><td>{{name}}</td><td>{{tel}}</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
+    {{/each}}
+    <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
+</table>
+
+</body>
+</html>
