@@ -7,11 +7,24 @@ var db = require("./db.js");
 
 var start = function (request, response) {
 	console.log("Request Start was called");
-	var body = templates.adrbook;
-    // use handlebars for templating
-    response.writeHead(200, {"Content-Type" : "text/html"});
-	response.write(body);
-	response.end();
+	var template = templates.adrbook;
+    // feed data into the template
+    // First retrieve data
+    db.query("SELECT * FROM persons", [], function(result){
+        // succes
+        console.log(result);
+        var body = template(result);
+        response.writeHead(200, {"Content-Type" : "text/html"});
+        response.write(body);
+        response.end();
+    }, function(err) {
+        // failure
+        console.error(err);
+        response.writeHead(200, {"Content-Type" : "text/plain"});
+        response.write("You've send: " + err);
+        response.end();
+    });
+
 };
 
 var upload = function (request, response) {

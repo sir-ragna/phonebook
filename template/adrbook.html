@@ -3,10 +3,13 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Adress book</title>
+    <title>Address book</title>
     <style type="text/css">
         td, th {
-            padding: 0.5rem;
+            padding-top: 0.6em;
+            padding-bottom: 0.6em;
+            padding-left: 2em;
+            padding-right: 2em;
             height: 2rem;
             border: 1px solid #ccc;
             text-align: center;
@@ -23,11 +26,11 @@
 
 <body>
 
-<h1>ADR Book</h1>
+<h1>Address Book</h1>
 
 <table>
     <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
-    {{#each person}}
+    {{#each rows}}
         <tr><td>{{name}}</td><td>{{tel}}</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
     {{/each}}
     <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
