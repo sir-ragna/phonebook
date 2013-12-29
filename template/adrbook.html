@@ -27,7 +27,9 @@
 <body>
 
 <h1>Address Book</h1>
-
+<noscript>
+    <h1>Javascript is recommended on this page.</h1>
+</noscript>
 <table>
     <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
     {{#each rows}}
@@ -35,6 +37,10 @@
     {{/each}}
     <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
 </table>
-
+<form action="/add" method="post">
+    <input name="user" type="text" />
+    <input name="tel" type="text" />
+    <input type="submit" />
+</form>
 </body>
 </html>

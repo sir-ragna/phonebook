@@ -20,29 +20,9 @@ var start = function (request, response) {
     }, function(err) {
         // failure
         console.error(err);
-        response.writeHead(200, {"Content-Type" : "text/plain"});
-        response.write("You've send: " + err);
+        response.writeHead(500, {"Content-Type" : "text/plain"});
+        response.write("INTERNAL SERVER ERROR \n" + err);
         response.end();
-    });
-
-};
-
-var upload = function (request, response) {
-	console.log("Request Upload was called");
-    receive.post(request, function (postData) {
-        // When we received the Postdata we construct the response.
-        
-        var txt = querystring.parse(postData).text; // decode query string
-        if (txt !== undefined) { // if there is a response
-            response.writeHead(200, {"Content-Type" : "text/plain"});
-            response.write("You've send: " + txt);
-            response.end();
-                        
-        } else { // if post data was received
-            response.writeHead(200, {"Content-Type" : "text/plain"});
-            response.write("You didn't send anything?");
-            response.end();
-        }
     });
 
 };

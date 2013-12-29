@@ -4,9 +4,7 @@ var requestHandlers = require("./requestHandlers.js");
 
 var handle = {};
 handle["/"] = requestHandlers.start;
-handle["/start"] = requestHandlers.start;
-handle["/upload"] = requestHandlers.upload;
-handle["/index.html"] = requestHandlers.index;
+handle["/list"] = requestHandlers.start;
 
 server.start(router.route, handle);
 

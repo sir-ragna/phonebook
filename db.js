@@ -1,23 +1,5 @@
 var pg = require('pg');
-//var conString = "postgres://postgres:1234@192.168.5.103/test";
-var conString = "postgres://per_admin@192.168.3.105/persons";
-
-/*pg.connect(conString, function(err, client, done) {
-  if(err) {
-    return console.error('error fetching client from pool', err);
-  }
-  client.query('SELECT $1::int AS numbor', ['1'], function(err, result) {
-    //call `done()` to release the client back to the pool
-    done();
-
-    if(err) {
-      return console.error('error running query', err);
-    }
-    console.log(result.rows[0].numbor);
-    //output: 1
-  });
-});*/
-
+var conString = "postgres://per_admin@192.168.3.101/persons";
 
 var success = function(res){
     if (res.command === "SELECT"){
@@ -90,5 +72,4 @@ var raw_query = function(query, success, failure) {
 //insert_person("Jesse", "0349");
 //print_persons();
 pg.end(); // close down the pool.
-//exports.raw_query = raw_query;
 exports.query = safe_query;
