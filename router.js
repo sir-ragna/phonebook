@@ -1,16 +1,29 @@
+/*global alert: true, console: true, Debug: true, exports: true, require: true */
+
 var url = require("url");
 
-var route = function (handle, request, response) {
-    var pathname = url.parse(request.url).pathname;
-	console.log("About to route a request for " + pathname);
-	if (typeof handle[pathname] === 'function') {
-		handle[pathname](request, response);
-	} else {
-		console.log("No request handler found for " + pathname);
-		response.writeHead(404, {"Content-Type": "text/plain"});
-		response.write("404 Not found");
-		response.end();
-	}
+var routes = [];
+var patterns = [];
+
+var addRoute = function (pattern, route) {
+    routes.push(route);
+    patterns.push(new RegExp(pattern));
 };
 
-exports.route = route;
+var handle = function (request, response) {
+    var pathname = url.parse(request.url).pathname;
+    var i = patterns.length;
+    while (i--) {
+        var pattern = patterns[i];
+        if (pattern.test(pathname)) {
+            // if pattern matches url, execute the appropriate route
+            routes[i](request, response);
+            return; // Don't execute multiple routes.
+        }
+    }
+    // only gets executed when no route has been found
+    
+};
+
+exports.handle = handle;
+exports.addRoute = addRoute;

@@ -1,5 +1,7 @@
+/*global Buffer: false, clearInterval: false, clearTimeout: false, console: true, exports: true, global: false, module: false, process: false, querystring: false, require: true, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+
 var pg = require('pg');
-var conString = "postgres://per_admin@192.168.3.101/persons";
+var conString = "postgres://per_admin@192.168.5.103/persons";
 
 var success = function(res){
     if (res.command === "SELECT"){
@@ -20,7 +22,9 @@ var insert_person = function(name, tel) {
     /* Insert a person */
     var statement = "INSERT INTO persons (name, tel) VAlUES ( $1, $2 );";
     var params = [ name, tel ];
-    safe_query(statement, params, function(msg){ console.log("insert succes");}, failure);    
+    safe_query(statement, params, function(msg){ 
+        console.log("insert succes");
+    }, failure);    
 };
 
 var print_persons = function(){

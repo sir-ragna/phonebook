@@ -1,9 +1,12 @@
+/*global Buffer: false, clearInterval: false, clearTimeout: false, console: true, exports: true, global: false, module: false, process: false, querystring: false, require: true, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+
 var receive = require("./receive.js");
 var exec = require("child_process").exec;
 var querystring = require("querystring");
 var fs = require("fs");
 var templates = require("./templates.js");
 var db = require("./db.js");
+var url = require("url");
 
 var start = function (request, response) {
 	console.log("Request Start was called");
@@ -27,27 +30,22 @@ var start = function (request, response) {
 
 };
 
-var index = function (request, response) {
-    var body = [
-		"<!DOCTYPE html>",
-		"<html>",
-		"<head>",
-		"<meta http-env=\"Content-Type\" content=\"text/html;charset=UTF-8\" />",
-		"</head>",
-		"<body>",
-		"<h1>Welcome to our homepage</h1>",
-        "<p>This may very well become one of the most awesome pages in the world.</p>",
-        '<a href="./start" title="go upload stuff">Have fun</a>',
-		"</body>",
-		"</html>"
-	].join("\n");
-    
-    response.writeHead(200, {"Content-Type" : "text/html"});
-	response.write(body);
-	response.end();
+var static = function(request, response) {
+    // serve static content
+     var pathname = url.parse(request.url).pathname;
+	console.log("About to route a request for " + pathname);
 };
 
-exports.index = index;
+var _404_ = function(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.warn("Path not found: " + pathname);
+    response.writeHead(404, {"Content-Type": "text/plain"});
+    response.write("404 Not found");
+    response.end();
+};
+
+
 exports.start = start;
-exports.upload = upload;
+exports._404_ = _404_;
+exports.static = static;
 

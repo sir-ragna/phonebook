@@ -1,3 +1,5 @@
+/*global Buffer: false, clearInterval: false, clearTimeout: false, console: true, exports: true, global: false, module: false, process: false, querystring: false, require: true, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+
 // some helper functions to receive data from the client
 
 var receivePostData = function (request, callback) {
