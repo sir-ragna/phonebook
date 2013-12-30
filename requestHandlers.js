@@ -1,4 +1,4 @@
-/*global alert: true, console: true, Debug: true, exports: true, require: true */
+/*global alert: true, console: true, Debug: true, exports: true, require: true , process : true*/
 
 var receive = require("./receive.js");
 var exec = require("child_process").exec;
@@ -7,6 +7,7 @@ var fs = require("fs");
 var templates = require("./templates.js");
 var db = require("./db.js");
 var url = require("url");
+var path = require("path");
 
 var start = function (request, response) {
 	console.log("Request Start was called");
@@ -32,8 +33,43 @@ var start = function (request, response) {
 
 var static = function(request, response) {
     // serve static content
-     var pathname = url.parse(request.url).pathname;
-	console.log("About to route a request for " + pathname);
+    var pathname = url.parse(request.url).pathname;
+    var fullpath = path.join(process.cwd(), pathname);
+    console.log(pathname);
+    console.log(fullpath);
+    fs.exists(fullpath, function (exists) {
+        if (exists) {
+            fs.stat(fullpath, function(err, stats) {
+                if (err) {
+                    console.error(err);
+                    // serve appropriate http errorcode
+                    response.writeHead(500, {"Content-Type": "text/plain"});
+                    response.write("An error occured. " + err);
+                    response.end();
+                    return;
+                }
+                if (stats.isDirectory()) {
+                    // Serve DIR listing
+                    // TODO
+                    response.writeHead(200, {"Content-Type": "text/plain"});
+                    response.write("This is a DIR");
+                    response.end();
+                } else if (stats.isFile()) {
+                    // Serve FILE
+                    // TODO
+                    response.writeHead(200, {"Content-Type": "text/plain"});
+                    response.write("This is a FILE");
+                    response.end();
+                } else {
+                    console.log(stats);
+                }
+            });
+        } else {
+            response.writeHead(404, {"Content-Type": "text/plain"});
+            response.write("File does not exist.");
+            response.end();
+        }
+    });
 };
 
 var _404_ = function(request, response) {
