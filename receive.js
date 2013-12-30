@@ -1,4 +1,4 @@
-/*global Buffer: false, clearInterval: false, clearTimeout: false, console: true, exports: true, global: false, module: false, process: false, querystring: false, require: true, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+/*global alert: true, console: true, Debug: true, exports: true, require: true */
 
 // some helper functions to receive data from the client
 

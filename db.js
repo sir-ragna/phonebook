@@ -1,4 +1,4 @@
-/*global Buffer: false, clearInterval: false, clearTimeout: false, console: true, exports: true, global: false, module: false, process: false, querystring: false, require: true, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+/*global alert: true, console: true, Debug: true, exports: true, require: true */
 
 var pg = require('pg');
 var conString = "postgres://per_admin@192.168.5.103/persons";
