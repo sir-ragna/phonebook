@@ -66,7 +66,8 @@ var static = function(request, response) {
                             return;
                         }
                         console.log("Serving file");
-                        response.writeHead(200, {"Content-Type": "text/css"});
+                        response.writeHead(200, { });
+                        //response.writeHead(200, {"Content-Type": "text/css"});
                         response.write(blob, "utf-8");
                         response.end();
                     });
