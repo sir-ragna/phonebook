@@ -2,40 +2,43 @@
 
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <title>Address book</title>
-    <style type="text/css">
-        td, th {
-            padding-top: 0.6em;
-            padding-bottom: 0.6em;
-            padding-left: 2em;
-            padding-right: 2em;
-            height: 2rem;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        th {
-            background: lightblue;
-            border-color: white;
-        }
-        body {
-            padding: 1rem;
-        }
-    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap-theme.min.css">-->
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
+    <!--<script type="text/javascript" charset="utf-8" src="../bootstrap/js/bootstrap.min.js"></script>-->
 </head>
 
 <body>
+<div class="container">
+    <div class="page-header">
+        <h1>Address Book</h1>    
+    </div>
 
-<h1>Address Book</h1>
-<noscript>
-    <h1>Javascript is recommended on this page.</h1>
-</noscript>
-<table>
-    <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
+    <noscript>
+        <div class="alert alert-warning">
+            <p>
+                Javascript is recommended on this page.
+            </p>
+    
+        </div>
+    </noscript>
+    
+    <div class="panel panel-default">
+        <table class="table table-striped">
+            <thead>
+                <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
+            </thead>
+            <tbody>
     {{#each rows}}
         <tr><td>{{name}}</td><td>{{tel}}</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
     {{/each}}
-    <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
-</table>
+                <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
+            </tbody>
+        
+    </div>
+</div>
 </body>
 </html>

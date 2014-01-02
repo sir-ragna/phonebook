@@ -49,17 +49,27 @@ var static = function(request, response) {
                     return;
                 }
                 if (stats.isDirectory()) {
-                    // Serve DIR listing
-                    // TODO
+                    // TODO: Serve DIR listing (maybe)
                     response.writeHead(200, {"Content-Type": "text/plain"});
                     response.write("This is a DIR");
                     response.end();
                 } else if (stats.isFile()) {
                     // Serve FILE
-                    // TODO
-                    response.writeHead(200, {"Content-Type": "text/plain"});
-                    response.write("This is a FILE");
-                    response.end();
+                    // TODO detect content types on file extension
+                    fs.readFile(fullpath, "utf-8", function (err, blob) {
+                        if (err) {
+                            console.error(err);
+                            // serve appropriate http errorcode
+                            response.writeHead(500, {"Content-Type": "text/plain"});
+                            response.write("Could not read file.\n An error occured. " + err);
+                            response.end();
+                            return;
+                        }
+                        console.log("Serving file");
+                        response.writeHead(200, {"Content-Type": "text/css"});
+                        response.write(blob, "utf-8");
+                        response.end();
+                    });
                 } else {
                     console.log(stats);
                 }

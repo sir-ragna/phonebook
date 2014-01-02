@@ -11,7 +11,6 @@ var success = function(res){
     } else {
         console.log(res);
     }
-
 };
 
 var failure = function(err){
