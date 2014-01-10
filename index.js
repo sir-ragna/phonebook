@@ -7,6 +7,7 @@ var requestHandlers = require("./requestHandlers.js");
 router.addRoute("^/$", requestHandlers.start);
 router.addRoute("^/list/?$", requestHandlers.start);
 router.addRoute("^/bootstrap/?.*$", requestHandlers.static);
+router.addRoute("^/delete.html$", requestHandlers.remove_person);
 
 server.start(router);
 

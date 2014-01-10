@@ -16,7 +16,6 @@ var start = function (request, response) {
     // First retrieve data
     db.query("SELECT * FROM persons", [], function(result){
         // succes
-        console.log(result);
         var body = template(result);
         response.writeHead(200, {"Content-Type" : "text/html"});
         response.write(body);
@@ -29,6 +28,22 @@ var start = function (request, response) {
         response.end();
     });
 
+};
+
+var remove_person = function(request, response) {
+    // do Post handing
+    
+    receive.post(request, function(data) {
+        // Do something with post data
+        console.log(data);
+        var user = querystring.parse(data).user
+       if (typeof user === 'string'){
+            db.del_person(user);
+       }
+
+    });
+    // Serve static file
+    static(request, response);
 };
 
 var static = function(request, response) {
@@ -95,4 +110,5 @@ var _404_ = function(request, response) {
 exports.start = start;
 exports._404_ = _404_;
 exports.static = static;
+exports.remove_person = remove_person;
 
