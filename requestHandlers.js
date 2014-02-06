@@ -5,9 +5,10 @@ var exec = require("child_process").exec;
 var querystring = require("querystring");
 var fs = require("fs");
 var templates = require("./templates.js");
-var db = require("./db.js");
+var db = require("./dummydb.js"); // TODO decide which DB to use based settings (or something like that)
 var url = require("url");
 var path = require("path");
+
 
 var start = function (request, response) {
 	console.log("Request Start was called");
@@ -30,13 +31,20 @@ var start = function (request, response) {
 
 };
 
+var add_person = function(request, response) {
+        var err = "Not implemented yet";
+        response.writeHead(500, {"Content-Type" : "text/plain"});
+        response.write("INTERNAL SERVER ERROR \n" + err);
+        response.end();
+};
+
 var remove_person = function(request, response) {
     // do Post handing
     
     receive.post(request, function(data) {
         // Do something with post data
         console.log(data);
-        var user = querystring.parse(data).user
+        var user = querystring.parse(data).user;
        if (typeof user === 'string'){
             db.del_person(user);
        }
@@ -106,9 +114,9 @@ var _404_ = function(request, response) {
     response.end();
 };
 
-
 exports.start = start;
 exports._404_ = _404_;
 exports.static = static;
 exports.remove_person = remove_person;
+exports.add_person = add_person;
 
