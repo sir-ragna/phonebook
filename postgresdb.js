@@ -1,22 +1,12 @@
 /*global alert: true, console: true, Debug: true, exports: true, require: true */
 var pg = require('pg');
-var conString = "postgres://per_admin@192.168.1.5/persons";
+var conString = "postgres://per_admin@192.168.1.6/persons";
 
 // CRUD PERSON
 var create_person = function(person, callback) {
     var statement = "INSERT INTO persons (name, tel) VAlUES ( $1, $2 );";
     var params = [ person.name, person.tel ];
     execute_query(statement, params, function(err, output) {
-        if (err) {
-            console.error("COULD NOT CREATE PERSON\n" + output);
-        } else if (output) {
-            console.log("PERSON CREATED");
-            console.log(output);
-        } else {
-            // Oops?
-            console.error("NO ERR OR OUTPUT was returned!?");
-        }
-        
         // Call callback if exists
         if (typeof callback === 'function'){
             callback(err, output);
@@ -26,27 +16,70 @@ var create_person = function(person, callback) {
 };
 
 var read_persons = function(callback) {
-    var query = "SELECT * FROM persons";
-    execute_query(query, null, callback); 
+    var statement = "SELECT * FROM persons";
+    execute_query(statement, null, function(err, result) {
+        if (typeof callback === 'function') {
+            callback( err, result.rows );
+        }
+    });
 };
 
-var read_person = function(id, callback) { throw Error("Not implemented yet"); };
-var update_person = function(person, callback) { throw Error("Not implemented yet"); };
-var delete_person = function(person, callback) { throw Error("Not implemented yet"); };
+// id, callback(err, persons<list>)
+var read_person = function(id, callback) {
+    var statement = "SELECT * FROM persons WHERE id = $1";
+    execute_query(statement, [ id ], callback);
+};
 
-var print_persons = function(){
-    read_persons( function(err, result) {
+var update_person = function(person, callback) {
+    var statement = "UPDATE persons SET name = $2, tel = $3 WHERE id = $1";
+    var params = [ person.id, person.name, person.tel ];
+    execute_query(statement, params, function(err, output) {        
+        if (output.rowCount === 0 && !err) {
+            // No rows where modified !!!
+            console.info(output.command + " || " + "No rows updated");
+            err = "PERSON MIGHT NOT EXIST, NO ROWS WERE UPDATED";
+        }
+        
+        // Call callback
+        if (typeof callback === 'function'){
+            callback(err, output);
+        }
+    });
+};
+
+var delete_person = function(id, callback) {
+    var statement = "DELETE FROM persons WHERE id = $1";
+    execute_query(statement, [ id ], function(err, output){
+        if (output.rowCount === 0 && !err) {
+            // No rows where modified !!!
+            console.info(output.command + " || " + "No rows updated/removed");
+            err = "PERSON MIGHT NOT EXIST, NO ROWS WERE REMOVED";
+        }
+
+        // Call callback
+        if (typeof callback === 'function'){
+            callback(err, output);
+        }
+    });
+};
+
+// print the table persons to the console
+var print_persons = function(callback){
+    execute_query("SELECT * FROM persons", null, function(err, result) {
         if (err) {
             console.error("COULD NOT READ persons\n" + err);
         } else {
             console.log("\n##RESULT##\n");
-            //console.log(result);
-            print_select_result_table(result);
+            console.log(printable_result_table(result));
+        }
+        if (typeof callback === 'function') {
+            callback(err);
         }
     }); 
 };
 
-var print_select_result_table = function(select_result) {
+// Construct a printable ASCII table
+var printable_result_table = function(select_result) {
     var fields = [];
     var col_lengths = [];
     var output = "";
@@ -117,7 +150,7 @@ var print_select_result_table = function(select_result) {
         output += "-";
     }
     
-    console.log(output);
+    return(output);
 };
 
 var execute_query = function (statement, params, callback){
@@ -125,7 +158,7 @@ var execute_query = function (statement, params, callback){
     pg.connect(conString, function(err, client, done) {
         if (err) {
             /* Give more details about the connection problem */
-            console.warn("COULD NOT CONNECT TO DB:: " + conString + "::");
+            console.warn("COULD NOT CONNECT TO DB [[ " + conString + " ]]");
             callback(err);
         } else {
             if (params === null || params === undefined) {
@@ -145,6 +178,7 @@ var execute_query = function (statement, params, callback){
 };
 
 var close_pool = function () {
+    // Closing the pool makes sure that the application can finish
     pg.end();
 };
 
