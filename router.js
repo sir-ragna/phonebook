@@ -12,6 +12,7 @@ var addRoute = function (pattern, route) {
 
 var handle = function (request, response) {
     var pathname = url.parse(request.url).pathname;
+    console.info("REQUEST: " + pathname);
     var i = patterns.length;
     while (i--) {
         var pattern = patterns[i];

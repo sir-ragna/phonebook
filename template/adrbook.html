@@ -34,7 +34,10 @@
             </thead>
             <tbody>
     {{#each rows}}
-        <tr><td>{{name}}</td><td>{{tel}}</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
+        <tr><td>{{name}}</td>
+            <td>{{tel}}</td>
+            <td><button>Edit</button></td>
+            <td><a href="remove/?id={{id}}" title="Remove {{name}}"><button>Delete</button></a></td></tr>
     {{/each}}
                 <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
             </tbody>

@@ -40,16 +40,11 @@ var add_person = function(request, response) {
 
 var remove_person = function(request, response) {
     // do Post handing
+    console.log("requested remove person");
+        
+    var get = receive.get(request);
     
-    receive.post(request, function(data) {
-        // Do something with post data
-        console.log(data);
-        var user = querystring.parse(data).user;
-       if (typeof user === 'string'){
-            db.del_person(user);
-       }
-
-    });
+    console.log(get);
     // Serve static file
     static(request, response);
 };
