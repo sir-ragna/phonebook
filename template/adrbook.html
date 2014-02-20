@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <title>Address book</title>
-
+    <meta name="author" content="Robbe Van der Gucht">
+    <meta name="description" content="A NodeJS CRUD Example">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--<link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap-theme.min.css">-->
     <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
@@ -33,11 +35,15 @@
                 <tr><th>Name</th><th>Telephone Number</th><th>Edit</th><th>Delete</th></tr>
             </thead>
             <tbody>
-    {{#each rows}}
-        <tr><td>{{name}}</td>
-            <td>{{tel}}</td>
-            <td><button>Edit</button></td>
-            <td><a href="remove/?id={{id}}" title="Remove {{name}}"><button>Delete</button></a></td></tr>
+    {{#each persons}}
+            <tr><td>{{name}}</td>
+                <td>{{tel}}</td>
+                <!-- these GET requests are case-sensitive -->
+                <td><a href="edit/?id={{id}}" title="Edit {{name}}" >
+                    <button>Edit</button></a></td>
+                <td><a href="remove/?id={{id}}" title="Remove {{name}}">
+                    <button>Delete</button></a></td>        
+            </tr>
     {{/each}}
                 <tr><td>Robbe</td><td>050 81 44 95</td><td><button>Edit</button></td><td><button>Delete</button></td></tr>
             </tbody>

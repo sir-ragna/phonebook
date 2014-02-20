@@ -62,7 +62,15 @@ var read_persons = function(callback) {
 var read_person = function(id, callback) { throw Error("Not implemented yet"); };
 
 var update_person = function(person, callback) { throw Error("Not implemented yet"); };
-var delete_person = function(person, callback) { throw Error("Not implemented yet"); };
+var delete_person = function(id, callback) {
+    console.log("DELETING PERSON:" + id);
+    dataset.rows.forEach(function(row) {
+        if (id === row.id) {
+            dataset.rows.splice(dataset.rows.indexOf(row), 1);
+        }
+    });
+    callback(null);
+};
 
 
 var raw_query = function(query, success, failure) {
@@ -76,4 +84,9 @@ var raw_query = function(query, success, failure) {
 
 
 //pg.end(); // close down the pool.
-exports.query = safe_query;
+exports.create_person = create_person;
+exports.read_persons  = read_persons;
+exports.update_person = update_person;
+exports.delete_person = delete_person;
+exports.print_persons = print_persons;
+exports.close_pool    = function() { throw Error("Not Implemented yet"); };

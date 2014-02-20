@@ -13,19 +13,28 @@ var path = require("path");
 var start = function (request, response) {
 	console.log("Request Start was called");
 	var template = templates.adrbook;
+    var template_data = {
+        title : "Telephone booke",
+        persons : []
+    };
     // feed data into the template
     // First retrieve data
-    db.query("SELECT * FROM persons", [], function(result){
+    db.read_persons( function(err, persons) {
+        if (err) {
+            // something went wrong
+            console.error(err);
+            response.writeHead(500, {"Content-Type" : "text/plain"});
+            response.write("INTERNAL SERVER ERROR \n" + err);
+            response.end();
+            return; // stop execution
+        }
         // succes
-        var body = template(result);
+        template_data.persons = persons;
+        console.log("__PERSONS__");
+        console.log(persons);
+        var body = template(template_data);
         response.writeHead(200, {"Content-Type" : "text/html"});
         response.write(body);
-        response.end();
-    }, function(err) {
-        // failure
-        console.error(err);
-        response.writeHead(500, {"Content-Type" : "text/plain"});
-        response.write("INTERNAL SERVER ERROR \n" + err);
         response.end();
     });
 
@@ -39,14 +48,39 @@ var add_person = function(request, response) {
 };
 
 var remove_person = function(request, response) {
-    // do Post handing
-    console.log("requested remove person");
-        
-    var get = receive.get(request);
     
-    console.log(get);
-    // Serve static file
-    static(request, response);
+    var get = receive.get(request); // returns GET object remove?id=12 <==> { id : '12' }
+    var person_id = parseInt(get.id);
+    
+    if (!person_id) {
+        // if not exists. Note: ID is case sensitive. remove?ID won't match this!
+        
+        // TODO change this to a warning on the user page
+        response.writeHead(500, {"Content-Type": "text/plain"});
+        response.write("An error occured.\n" + 
+                       "Person does not exist\n" +
+                       "TODO change to redirect with warning.");
+        response.end();
+        return;
+    }
+    
+    console.log(request);
+    db.delete_person(person_id, function(err, output) {
+        if (err) {
+            // something went wrong
+            console.error(err);
+            response.writeHead(303, {"Content-Type": "text/html",
+                                     "location" : request.headers.referer });
+            response.end();
+            return;
+        }
+        // everything went fine
+        console.log(output);
+        console.error(err);
+        response.writeHead(303, {"Content-Type": "text/html",
+                                 "location" : request.headers.referer });
+        response.end();
+    });
 };
 
 var static = function(request, response) {
