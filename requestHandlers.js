@@ -48,8 +48,8 @@ var add_person = function(request, response) {
 };
 
 var remove_person = function(request, response) {
-    
     var get = receive.get(request); // returns GET object remove?id=12 <==> { id : '12' }
+    console.log(get);
     var person_id = parseInt(get.id);
     
     if (!person_id) {
@@ -64,21 +64,28 @@ var remove_person = function(request, response) {
         return;
     }
     
-    console.log(request);
+    var redir_url = "http://localhost:8080/";
+    if (request.headers.referer !== undefined) {
+        redir_url = request.headers.referer;
+        // Thanks Ine for helping me find this bug :-)
+    }
+    
     db.delete_person(person_id, function(err, output) {
         if (err) {
             // something went wrong
             console.error(err);
             response.writeHead(303, {"Content-Type": "text/html",
-                                     "location" : request.headers.referer });
+                                     "location" : redir_url });
             response.end();
             return;
         }
         // everything went fine
         console.log(output);
         console.error(err);
+        console.log(request.headers.referer);
+        
         response.writeHead(303, {"Content-Type": "text/html",
-                                 "location" : request.headers.referer });
+                                 "location" : redir_url });
         response.end();
     });
 };
