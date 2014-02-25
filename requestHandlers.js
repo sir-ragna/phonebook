@@ -40,16 +40,45 @@ var start = function (request, response) {
 
 };
 
+
+
 var add_person = function(request, response) {
-        var err = "Not implemented yet";
-        response.writeHead(500, {"Content-Type" : "text/plain"});
-        response.write("INTERNAL SERVER ERROR \n" + err);
+    // Expect a full person object from the GET
+    // TODO: Fallback on POST?
+    var get = receive.get(request);
+    
+    if (!(get.name && get.tel)) {
+        response.writeHead(406, {"Content-Type" : "text/plain"});
+        response.write("406 Not Acceptable\n");
+        response.write("Needs a name and a tel paramater.\n");
         response.end();
+        return;
+    }
+    
+    db.create_person(get, function(err) {
+        if (err) {
+            response.writeHead(500, {"Content-Type" : "text/plain"});
+            response.write("INTERNAL SERVER ERROR \n" + err);
+            response.end();
+            return;
+        }
+        
+        response.writeHead(303, {"Content-Type": "text/html", "location" : "http://localhost:8080/" });
+        response.end();
+        return;
+    });
+};
+
+var update_person = function(request, response) {
+    // Expect an idea and some fields you want updated from the GET
+    var err = "Not implemented yet";
+    response.writeHead(500, {"Content-Type" : "text/plain"});
+    response.write("INTERNAL SERVER ERROR \n" + err);
+    response.end();
 };
 
 var remove_person = function(request, response) {
     var get = receive.get(request); // returns GET object remove?id=12 <==> { id : '12' }
-    console.log(get);
     var person_id = parseInt(get.id);
     
     if (!person_id) {
@@ -155,4 +184,5 @@ exports._404_ = _404_;
 exports.static = static;
 exports.remove_person = remove_person;
 exports.add_person = add_person;
+exports.update_person = update_person;
 

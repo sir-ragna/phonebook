@@ -5,6 +5,7 @@
 var dataset = { command: 'SELECT',
       rowCount: 18,
       oid: NaN,
+      maxID: 6,
       rows: 
        [ { id: 1, name: 'Bert', tel: '7531' },
          { id: 2, name: 'Stijn', tel: '7545' },
@@ -50,6 +51,8 @@ var safe_query = function (statement, params, success, failure){
 
 // CRUD PERSON
 var create_person = function(person, callback) {
+    person.id = dataset.maxID;
+    dataset.maxID++;
     dataset.rows.push(person);
     callback(null);
 };
