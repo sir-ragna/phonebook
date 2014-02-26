@@ -40,8 +40,6 @@ var start = function (request, response) {
 
 };
 
-
-
 var add_person = function(request, response) {
     // Expect a full person object from the GET
     // TODO: Fallback on POST?
@@ -87,7 +85,7 @@ var remove_person = function(request, response) {
         // TODO change this to a warning on the user page
         response.writeHead(500, {"Content-Type": "text/plain"});
         response.write("An error occured.\n" + 
-                       "Person does not exist\n" +
+                       "No readable ID given\n" +
                        "TODO change to redirect with warning.");
         response.end();
         return;
@@ -103,16 +101,14 @@ var remove_person = function(request, response) {
         if (err) {
             // something went wrong
             console.error(err);
-            response.writeHead(303, {"Content-Type": "text/html",
-                                     "location" : redir_url });
+            response.writeHead(500, {"Content-Type": "text/plain"});
+            response.write("An error occured.\n" + err.toString());
             response.end();
             return;
         }
         // everything went fine
         console.log(output);
-        console.error(err);
         console.log(request.headers.referer);
-        
         response.writeHead(303, {"Content-Type": "text/html",
                                  "location" : redir_url });
         response.end();
@@ -126,49 +122,47 @@ var static = function(request, response) {
     console.log(pathname);
     console.log(fullpath);
     fs.exists(fullpath, function (exists) {
-        if (exists) {
-            fs.stat(fullpath, function(err, stats) {
-                if (err) {
-                    console.error(err);
-                    // serve appropriate http errorcode
-                    response.writeHead(500, {"Content-Type": "text/plain"});
-                    response.write("An error occured. " + err);
-                    response.end();
-                    return;
-                }
-                if (stats.isDirectory()) {
-                    // TODO: Serve DIR listing (maybe)
-                    response.writeHead(200, {"Content-Type": "text/plain"});
-                    response.write("This is a DIR");
-                    response.end();
-                } else if (stats.isFile()) {
-                    // Serve FILE
-                    // TODO detect content types on file extension
-                    fs.readFile(fullpath, "utf-8", function (err, blob) {
-                        if (err) {
-                            console.error(err);
-                            // serve appropriate http errorcode
-                            response.writeHead(500, {"Content-Type": "text/plain"});
-                            response.write("Could not read file.\n An error occured. " + err);
-                            response.end();
-                            return;
-                        }
-                        console.log("Serving file");
-                        response.writeHead(200, { });
-                        //response.writeHead(200, {"Content-Type": "text/css"});
-                        response.write(blob, "utf-8");
-                        response.end();
-                    });
-                } else {
-                    console.log(stats);
-                }
-            });
-        } else {
-            response.writeHead(404, {"Content-Type": "text/plain"});
-            response.write("File does not exist.");
-            response.end();
+        if (!exists) {
+            _404_(request, response);
+            return;
         }
+        
+        fs.stat(fullpath, function(err, stats) {
+            if (err) {
+                _500_(request, response, err);
+                return;
+            }
+            if (stats.isDirectory()) {
+                // TODO: Serve DIR listing (maybe)
+                response.writeHead(200, {"Content-Type": "text/plain"});
+                response.write("This is a DIR");
+                response.end();
+            } else if (stats.isFile()) {
+                // Serve FILE actual file
+                fs.readFile(fullpath, "utf-8", function (err, blob) {
+                    if (err) {
+                        _500_(request, response, err);
+                        return;
+                    }
+                    console.log("Serving file");
+                    // Todo detect file type for example: {"Content-Type": "text/css"}
+                    response.writeHead(200, {});
+                    response.write(blob, "utf-8");
+                    response.end();
+                });
+            } else {
+                // If not file nor directory, then what is?
+                console.log(stats);
+            }
+        });
     });
+};
+
+var _500_ = function(request, response, err) {
+    console.error(err);
+    response.writeHead(500, {"Content-Type": "text/plain"});
+    response.write("Could not read file.\n An error occured. " + err.toString());
+    response.end();
 };
 
 var _404_ = function(request, response) {

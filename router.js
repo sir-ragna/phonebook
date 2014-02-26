@@ -2,6 +2,7 @@
 
 var url = require("url");
 
+
 var routes = [];
 var patterns = [];
 
@@ -23,7 +24,8 @@ var handle = function (request, response) {
         }
     }
     // only gets executed when no route has been found
-    
+    // Needs to give a 404
+    require("./requestHandlers.js")._404_(request, response);
 };
 
 exports.handle = handle;

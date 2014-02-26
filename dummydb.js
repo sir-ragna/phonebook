@@ -66,13 +66,15 @@ var read_person = function(id, callback) { throw Error("Not implemented yet"); }
 
 var update_person = function(person, callback) { throw Error("Not implemented yet"); };
 var delete_person = function(id, callback) {
+    var err = "PERSON NOT FOUND in Database";
     console.log("DELETING PERSON:" + id);
     dataset.rows.forEach(function(row) {
         if (id === row.id) {
             dataset.rows.splice(dataset.rows.indexOf(row), 1);
+            err = null; // Person found, no error needed
         }
     });
-    callback(null);
+    callback(err);
 };
 
 
