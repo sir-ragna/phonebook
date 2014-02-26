@@ -55,4 +55,18 @@ describe("HTTP codes", function(){
         });
     }, 50);
     
+    it('should return 200 when requesting the CSS file', function(done){
+        http.get('http://localhost:8080/bootstrap/css/bootstrap.min.css', function(res){
+            assert.equal(200, res.statusCode);
+            done();
+        });
+    }, 50);
+    
+    it('should return 404 when requesting a non-existant file', function(done){
+        http.get('http://localhost:8080/bootstrap/css/nonexistantfile.wut', function(res){
+            assert.equal(404, res.statusCode);
+            done();
+        });
+    }, 50);
+    
 });
