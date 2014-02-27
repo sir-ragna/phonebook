@@ -14,19 +14,16 @@ var start = function (request, response) {
 	console.log("Request Start was called");
 	var template = templates.adrbook;
     var template_data = {
-        title : "Telephone booke",
+        title : "Phonebook",
         persons : []
     };
     // feed data into the template
     // First retrieve data
     db.read_persons( function(err, persons) {
         if (err) {
-            // something went wrong
             console.error(err);
-            response.writeHead(500, {"Content-Type" : "text/plain"});
-            response.write("INTERNAL SERVER ERROR \n" + err);
-            response.end();
-            return; // stop execution
+            _500_(request, response, err);
+            return;
         }
         // succes
         template_data.persons = persons;
@@ -55,24 +52,53 @@ var add_person = function(request, response) {
     
     db.create_person(get, function(err) {
         if (err) {
-            response.writeHead(500, {"Content-Type" : "text/plain"});
-            response.write("INTERNAL SERVER ERROR \n" + err);
-            response.end();
+            _500_(request, response, err);
             return;
         }
-        
-        response.writeHead(303, {"Content-Type": "text/html", "location" : "http://localhost:8080/" });
-        response.end();
+        // Everything went alright redirect to default page
+        _303_(request, response);
         return;
     });
 };
 
 var update_person = function(request, response) {
-    // Expect an idea and some fields you want updated from the GET
+    
+    var get = receive.get(request);
+    var template = templates.edit;
+    var template_data = {
+        title: "Phonebook | Edit telephone entry"
+    };
+    var id = parseInt(get.id);
+    
+    if (!get.id || isNaN(id)) {
+        // requires ID to be able to edit.
+        _404_(request, response);
+        return;
+    }
+    
+    if (!(get.name && get.tel)) {
+        // name or tel are not present
+        // read out entry from DB and present in form
+        db.read_person( id, function(err, person) {
+            if (err) {
+                console.error(err);
+                _404_(request, response, err);
+                return;
+            }
+            template_data.id = person.id;
+            template_data.name = person.name;
+            template_data.tel = person.tel;
+            var body = template(template_data);
+            response.writeHead(200, {"Content-Type" : "text/html"});
+            response.write(body);
+            response.end();
+            return;
+        });
+    }
+    
+    
     var err = "Not implemented yet";
-    response.writeHead(500, {"Content-Type" : "text/plain"});
-    response.write("INTERNAL SERVER ERROR \n" + err);
-    response.end();
+    _500_(request, response, err);
 };
 
 var remove_person = function(request, response) {
@@ -81,7 +107,6 @@ var remove_person = function(request, response) {
     
     if (!person_id) {
         // if not exists. Note: ID is case sensitive. remove?ID won't match this!
-        
         // TODO change this to a warning on the user page
         response.writeHead(500, {"Content-Type": "text/plain"});
         response.write("An error occured.\n" + 
@@ -90,13 +115,7 @@ var remove_person = function(request, response) {
         response.end();
         return;
     }
-    
-    var redir_url = "http://localhost:8080/";
-    if (request.headers.referer !== undefined) {
-        redir_url = request.headers.referer;
-        // Thanks Ine for helping me find this bug :-)
-    }
-    
+        
     db.delete_person(person_id, function(err, output) {
         if (err) {
             // something went wrong
@@ -108,10 +127,7 @@ var remove_person = function(request, response) {
         }
         // everything went fine
         console.log(output);
-        console.log(request.headers.referer);
-        response.writeHead(303, {"Content-Type": "text/html",
-                                 "location" : redir_url });
-        response.end();
+        _303_(request, response);
     });
 };
 
@@ -161,8 +177,15 @@ var static = function(request, response) {
 var _500_ = function(request, response, err) {
     console.error(err);
     response.writeHead(500, {"Content-Type": "text/plain"});
-    response.write("Could not read file.\n An error occured. " + err.toString());
+    response.write("An error internal server error occured.\n\n" + err.toString());
     response.end();
+};
+
+var _303_ = function(request, response, url) {
+    // TODO implement warn and error messages on the html pages
+    var location = url || "http://localhost:8080/";
+    response.writeHead(303, {"Content-Type": "text/html", "location" :  location });
+    response.end();    
 };
 
 var _404_ = function(request, response) {

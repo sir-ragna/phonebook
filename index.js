@@ -9,7 +9,7 @@ router.addRoute("^/list/?$", requestHandlers.start);
 router.addRoute("^/bootstrap/?.*$", requestHandlers.static);
 router.addRoute("^/remove/?.*$", requestHandlers.remove_person);
 router.addRoute("^/add/?.*", requestHandlers.add_person);
-router.addRoute("^/update/?.*", requestHandlers.update_person);
+router.addRoute("^/(?:edit|update)/?.*", requestHandlers.update_person);
 
 server.start(router);
 

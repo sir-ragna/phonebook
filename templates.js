@@ -8,8 +8,10 @@ var hb = require("handlebars");
 
 console.log("LOADING TEMPLATES");
 
-var adrbook = hb.compile(fs.readFileSync("./template/adrbook.html", "utf-8"));
+var list = hb.compile(fs.readFileSync("./template/list.html", "utf-8"));
+var edit = hb.compile(fs.readFileSync("./template/edit.html", "utf-8"));
 
 console.log("FILES LOADED & TEMPLATES COMPILED");
 
-exports.adrbook = adrbook;
+exports.adrbook = list;
+exports.edit = edit;
