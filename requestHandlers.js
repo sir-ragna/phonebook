@@ -69,6 +69,8 @@ var update_person = function(request, response) {
         title: "Phonebook | Edit telephone entry"
     };
     var id = parseInt(get.id);
+    var name = get.name;
+    var tel = get.tel;
     
     if (!get.id || isNaN(id)) {
         // requires ID to be able to edit.
@@ -76,7 +78,7 @@ var update_person = function(request, response) {
         return;
     }
     
-    if (!(get.name && get.tel)) {
+    if (!(name && tel)) {
         // name or tel are not present
         // read out entry from DB and present in form
         db.read_person( id, function(err, person) {
@@ -94,11 +96,21 @@ var update_person = function(request, response) {
             response.end();
             return;
         });
+    } else if (name && tel) {
+        db.update_person( { id : id, name: name, tel: tel }, function (err, person) {
+            if (err) {
+                // TODO notify user something failed
+                _303_(request, response);
+                return;
+            }
+            // TODO notify user the update succeded
+            _303_(request, response);
+            return;
+        });
     }
     
     
-    var err = "Not implemented yet";
-    _500_(request, response, err);
+    _404_(request, response);
 };
 
 var remove_person = function(request, response) {

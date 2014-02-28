@@ -76,7 +76,17 @@ var read_person = function(id, callback) {
     callback(err, person);
 };
 
-var update_person = function(person, callback) { throw Error("Not implemented yet"); };
+var update_person = function(person, callback) {
+    var err = "COULD NOT UPDATE PERSON";
+    dataset.rows.forEach(function (row) {
+        if (person.id === row.id) {
+            dataset.rows[dataset.rows.indexOf(row)] = person;
+            err = null;
+        }
+    });
+    callback(err, person);
+};
+
 var delete_person = function(id, callback) {
     var err = "PERSON NOT FOUND in Database";
     console.log("DELETING PERSON:" + id);
