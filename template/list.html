@@ -28,7 +28,13 @@
     
         </div>
     </noscript>
-    
+    {{#if notify}}
+    <div class="alert alert-{{notify.type}}">
+        <p>
+            {{notify.body}}
+        </p>
+    </div>
+    {{/if}}
     <div class="panel panel-default">
         <table class="table table-striped">
             <thead>

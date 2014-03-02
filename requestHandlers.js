@@ -9,14 +9,26 @@ var db = require("./dummydb.js"); // TODO decide which DB to use based settings 
 var url = require("url");
 var path = require("path");
 
-
 var start = function (request, response) {
 	console.log("Request Start was called");
+    var get = receive.get(request);
 	var template = templates.adrbook;
     var template_data = {
         title : "Phonebook",
         persons : []
     };
+    
+    // see if a notification has to be displayed on the page
+    if (typeof get.notify !== 'undefined' ||
+        typeof get.body !== 'undefined') {
+        // TODO build in XSS protection
+        // (this allow injection via the URL)
+        template_data.notify = {
+            type: get.notify,
+            body: get.body
+        };
+    }
+    
     // feed data into the template
     // First retrieve data
     db.read_persons( function(err, persons) {
@@ -104,7 +116,9 @@ var update_person = function(request, response) {
                 return;
             }
             // TODO notify user the update succeded
-            _303_(request, response);
+            var msg = "Success! " + name + '(' + tel + ')' + "was updated to the phonebook";
+            var url = "/?" + querystring.stringify({ notify : 'success', body : msg });
+            _303_(request, response, url);
             return;
         });
     }
