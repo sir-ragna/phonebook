@@ -1,6 +1,6 @@
 /*global alert: true, console: true, Debug: true, exports: true, require: true */
 var pg = require('pg');
-var conString = "postgres://per_admin@192.168.1.6/persons";
+var conString = "postgres://per_admin@192.168.5.104/persons";
 
 // CRUD PERSON
 var create_person = function(person, callback) {
@@ -18,6 +18,10 @@ var create_person = function(person, callback) {
 var read_persons = function(callback) {
     var statement = "SELECT * FROM persons";
     execute_query(statement, null, function(err, result) {
+        if (err) {
+            callback(err);
+            return;
+        }
         if (typeof callback === 'function') {
             callback( err, result.rows );
         }
@@ -27,14 +31,20 @@ var read_persons = function(callback) {
 // id, callback(err, persons<list>)
 var read_person = function(id, callback) {
     var statement = "SELECT * FROM persons WHERE id = $1";
-    execute_query(statement, [ id ], callback);
+    execute_query(statement, [ id ], function(err, result){
+        if (err) {
+            callback(err);
+        }
+        var person = result.rows[0];
+        callback(err, person);
+    });
 };
 
 var update_person = function(person, callback) {
     var statement = "UPDATE persons SET name = $2, tel = $3 WHERE id = $1";
     var params = [ person.id, person.name, person.tel ];
     execute_query(statement, params, function(err, output) {        
-        if (output.rowCount === 0 && !err) {
+        if (!err && output.rowCount === 0) {
             // No rows where modified !!!
             console.info(output.command + " || " + "No rows updated");
             err = "PERSON MIGHT NOT EXIST, NO ROWS WERE UPDATED";
@@ -50,7 +60,7 @@ var update_person = function(person, callback) {
 var delete_person = function(id, callback) {
     var statement = "DELETE FROM persons WHERE id = $1";
     execute_query(statement, [ id ], function(err, output){
-        if (output.rowCount === 0 && !err) {
+        if (!err && output.rowCount === 0) {
             // No rows where modified !!!
             console.info(output.command + " || " + "No rows updated/removed");
             err = "PERSON MIGHT NOT EXIST, NO ROWS WERE REMOVED";
@@ -164,12 +174,12 @@ var execute_query = function (statement, params, callback){
             if (params === null || params === undefined) {
                 client.query(statement, function(err, result){
                     done(); // release client to pool
-                    callback(err, result);
+                    callback(null, result);
                 });
             } else {
                 client.query(statement, params, function(err, result){
                     done(); // release client to pool
-                    callback(err, result);
+                    callback(null, result);
                 });
             }
         }
@@ -183,9 +193,11 @@ var close_pool = function () {
 };
 
 //pg.end(); // close down the pool.
+
+exports.close_pool    = close_pool;
 exports.create_person = create_person;
 exports.read_persons  = read_persons;
+exports.read_person   = read_person;
 exports.update_person = update_person;
 exports.delete_person = delete_person;
 exports.print_persons = print_persons;
-exports.close_pool    = close_pool;

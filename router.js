@@ -25,6 +25,7 @@ var handle = function (request, response) {
     }
     // only gets executed when no route has been found
     // Needs to give a 404
+    console.warn("No route defined for this path");
     require("./requestHandlers.js")._404_(request, response);
 };
 

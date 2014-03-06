@@ -5,7 +5,7 @@ var exec = require("child_process").exec;
 var querystring = require("querystring");
 var fs = require("fs");
 var templates = require("./templates.js");
-var db = require("./nodb.js"); // TODO decide which DB to use based settings (or something like that)
+var db = require("./postgresdb.js"); // TODO decide which DB to use based settings (or something like that)
 var url = require("url");
 var path = require("path");
 
@@ -88,6 +88,7 @@ var update_person = function(request, response) {
     
     if (!get.id || isNaN(id)) {
         // requires ID to be able to edit.
+        console.error("No ID found");
         _404_(request, response);
         return;
     }
@@ -124,9 +125,6 @@ var update_person = function(request, response) {
             return;
         });
     }
-    
-    
-    _404_(request, response);
 };
 
 var remove_person = function(request, response) {
