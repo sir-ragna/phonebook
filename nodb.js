@@ -1,6 +1,8 @@
 /*global alert: true, console: true, Debug: true, exports: true, require: true */
 
 // Dummy CLASS
+// not really a datastore class. This is so I can just run the project without setting up an 
+// postgres server.
 
 var dataset = { command: 'SELECT',
       rowCount: 18,
@@ -34,19 +36,6 @@ var dataset = { command: 'SELECT',
 
 var print_persons = function(){
     console.log(dataset.rows);
-};
-
-var safe_query = function (statement, params, success, failure){
-    if (statement.substring(0, 8) === "SELECT *") {
-        success(dataset);
-    } else if (statement.substring(0, 6) === "INSERT") {
-        //insert_person( params[0], params[1]);
-        throw Error("Unimplemented in dummy object");
-    } else {
-        throw Error("Unimplemented in dummy object");
-    }
-    
-    
 };
 
 // CRUD PERSON
@@ -97,16 +86,6 @@ var delete_person = function(id, callback) {
         }
     });
     callback(err);
-};
-
-
-var raw_query = function(query, success, failure) {
-    // TODO query type and return dummy object.
-    if (query === "SELECT * FROM persons") {
-        success(dataset);
-    } else {
-        throw Error("Unimplemented in dummy object");
-    } 
 };
 
 

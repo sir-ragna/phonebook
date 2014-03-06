@@ -5,7 +5,7 @@ var exec = require("child_process").exec;
 var querystring = require("querystring");
 var fs = require("fs");
 var templates = require("./templates.js");
-var db = require("./dummydb.js"); // TODO decide which DB to use based settings (or something like that)
+var db = require("./nodb.js"); // TODO decide which DB to use based settings (or something like that)
 var url = require("url");
 var path = require("path");
 
@@ -68,7 +68,9 @@ var add_person = function(request, response) {
             return;
         }
         // Everything went alright redirect to default page
-        _303_(request, response);
+        var msg = "Successfully added " + get.name + "(" + get.tel + ")" + " to the phonebook.";
+        var msgObject = { notify : 'success', body : msg };
+        _303_(request, response, msgObject);
         return;
     });
 };
@@ -116,9 +118,9 @@ var update_person = function(request, response) {
                 return;
             }
             // TODO notify user the update succeded
-            var msg = "Success! " + name + '(' + tel + ')' + "was updated to the phonebook";
-            var url = "/?" + querystring.stringify({ notify : 'success', body : msg });
-            _303_(request, response, url);
+            var msg = "Success! " + name + '(' + tel + ')' + "was updated in the phonebook";
+            var msgObject = { notify : 'success', body : msg };
+            _303_(request, response, msgObject);
             return;
         });
     }
@@ -153,7 +155,9 @@ var remove_person = function(request, response) {
         }
         // everything went fine
         console.log(output);
-        _303_(request, response);
+        var msg = "Successfully removed a person";
+        var msgObject = { notify : 'info', body : msg };
+        _303_(request, response, msgObject);
     });
 };
 
@@ -207,9 +211,11 @@ var _500_ = function(request, response, err) {
     response.end();
 };
 
-var _303_ = function(request, response, url) {
-    // TODO implement warn and error messages on the html pages
-    var location = url || "http://localhost:8080/";
+var _303_ = function(request, response, msgObject) {
+    var location = "http://localhost:8080";
+    if (msgObject) {
+        location = location + "/?" + querystring.stringify(msgObject);
+    }
     response.writeHead(303, {"Content-Type": "text/html", "location" :  location });
     response.end();    
 };
