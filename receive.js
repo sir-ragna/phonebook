@@ -18,7 +18,6 @@ var receivePostData = function (request, callback) {
     });
 };
 
-
 var parseGetRequest = function (request) {
     request.setEncoding("utf8");
     var getObject = querystring.parse(url.parse(request.url).query);
