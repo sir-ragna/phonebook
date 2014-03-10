@@ -12,7 +12,7 @@ var path = require("path");
 var start = function (request, response) {
 	console.log("Request Start was called");
     var get = receive.get(request);
-	var template = templates.adrbook;
+	var template = templates.phonebook;
     var template_data = {
         title : "Phonebook",
         persons : []

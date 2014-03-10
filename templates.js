@@ -13,5 +13,5 @@ var edit = hb.compile(fs.readFileSync("./template/edit.html", "utf-8"));
 
 console.log("FILES LOADED & TEMPLATES COMPILED");
 
-exports.adrbook = list;
+exports.phonebook = list;
 exports.edit = edit;
