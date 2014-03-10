@@ -203,6 +203,7 @@ var static = function(request, response) {
 };
 
 var _500_ = function(request, response, err) {
+    console.error("ERROR 500");
     console.error(err);
     response.writeHead(500, {"Content-Type": "text/plain"});
     response.write("An error internal server error occured.\n\n" + err.toString());

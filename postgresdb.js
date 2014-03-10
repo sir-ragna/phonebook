@@ -1,4 +1,4 @@
-/*global alert: true, console: true, Debug: true, exports: true, require: true */
+/*global alert: true, console: true, Debug: true, exports: true, require: true, setTimeout: true*/
 var pg = require('pg');
 var conString = "postgres://per_admin@192.168.5.104/persons";
 
@@ -34,7 +34,8 @@ var read_person = function(id, callback) {
     execute_query(statement, [ id ], function(err, result){
         if (err) {
             callback(err);
-        }
+            return;
+        } 
         var person = result.rows[0];
         callback(err, person);
     });
@@ -165,6 +166,12 @@ var printable_result_table = function(select_result) {
 
 var execute_query = function (statement, params, callback){
     console.info("QUERY:" + statement);
+    setTimeout( function() {
+        var err = "Database timeout: " + 200 + "ms";
+        callback(err);
+        // in order to stop callback pollution
+        callback = function(dbErr){if (dbErr) {console.error(dbErr);}};
+    }, 150);
     pg.connect(conString, function(err, client, done) {
         if (err) {
             /* Give more details about the connection problem */
