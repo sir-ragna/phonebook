@@ -1,0 +1,25 @@
+{
+  "name": "phonebook",
+  "version": "0.0.1",
+  "description": "A simple phonebook. Demonstration of CRUD with HTML/NODE/Postgres stack.",
+  "main": "index.js",
+  "dependencies": {
+    "handlebars": "~1.2.1",
+    "pg": "~2.9.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "Node",
+    "PostgreSQL",
+    "phonebook",
+    "CRUD"
+  ],
+  "author": "Robbe Van der Gucht",
+  "license": "BSD-2-Clause"
+}
