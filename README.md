@@ -7,7 +7,7 @@ This is mainly an educational project to learn myself de basics of `node`. My
 attempt was to make a basic CRUD program. Create, Read, Update and Delete 
 telephone numbers is possible. It is dependent on a PostgreSQl server but you 
 can also run it without datastorage by chaning the line `var db = 
-require("./postgresdb.js");` to require _./nodb.js_ so It'll run simply on 
+require("./postgresdb.js");` to `./nodb.js` so It'll run simply on 
 some records held in RAM.
 
 ## How to run this?
@@ -22,10 +22,15 @@ commands.
     ./configure && make && make install
     git clone https://github.com/sir-ragna/<this repo>.git
     npm install # this should install all dependencies (package.json)
+    exit # exit root
     sed -i 's/postgresdb.js/nodb.js/' requestHandlers.js # don't use DB
     node index.js
 
 If you want to run the tests you'll also have to install mocha (globally).
+
+    npm -g install mocha
+    mocha
+
 
 ### Postgres
 
@@ -42,7 +47,7 @@ Log in en create table
 
     persons=\# CREATE TABLE persons ( id bigserial primary key, name varchar(80), tel varchar(15) );
 
-Fill your own connection in `postgresdb.js`
+Fill your own connectionstring in `postgresdb.js`
 
     var conString = "postgres://per_admin@192.168.3.100/persons";
 
