@@ -7,7 +7,7 @@ This is mainly an educational project to learn myself de basics of `node`. My
 attempt was to make a basic CRUD program. Create, Read, Update and Delete 
 telephone numbers is possible. It is dependent on a PostgreSQl server but you 
 can also run it without datastorage by chaning the line `var db = 
-require("./postgresdb.js");` to `./nodb.js` so It'll run simply on 
+require("./postgresdb.js");` to `./nodb.js`(in the `requestHandlers.js`file) so It'll run simply on 
 some records held in RAM.
 
 ## How to run this?
